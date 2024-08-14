@@ -83,6 +83,7 @@ class _MobileAuthState extends State<MobileAuth> {
                   SizedBox(height: responsive.hp(3)),
                   TermsConditionText(
                     responsive: responsive,
+                    mainTextColor: Colors.black.withOpacity(0.4),
                     mainText: 'By Continuing, I agree to TotalX\'s ',
                     linkTexts: [
                       LinkText(
@@ -103,11 +104,11 @@ class _MobileAuthState extends State<MobileAuth> {
                       responsive: responsive,
                       buttonText: 'Get OTP',
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OtpPage()),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => const OtpPage()),
+                        // );
                       },
                     ),
                   ),

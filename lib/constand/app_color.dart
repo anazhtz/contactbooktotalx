@@ -11,4 +11,5 @@ class AppColors {
   static final Color saveButton = HexColor("#1782FF");
   static final Color cancelButton = HexColor("#CCCCCC");
   static final Color filterSelect = HexColor("#2873F0");
+  static final Color hintColor2 = HexColor("#333333");
 }

@@ -7,11 +7,13 @@ class TermsConditionText extends StatelessWidget {
     super.key,
     required this.responsive,
     required this.mainText,
+    required this.mainTextColor,
     required this.linkTexts,
   });
 
   final Responsive responsive;
   final String mainText;
+  final Color mainTextColor;
   final List<LinkText> linkTexts;
 
   @override
@@ -22,7 +24,7 @@ class TermsConditionText extends StatelessWidget {
         text: mainText,
         style: AppTypography.montserratSemiBold.copyWith(
           fontSize: responsive.sp(13),
-          color: Colors.black.withOpacity(0.4),
+          color: mainTextColor,
         ),
         children: linkTexts.map((linkText) {
           return TextSpan(
