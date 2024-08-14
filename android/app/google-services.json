@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "423760808842",
+    "project_id": "otpauthphone",
+    "storage_bucket": "otpauthphone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:423760808842:android:955e67af7321513b0bd673",
+        "android_client_info": {
+          "package_name": "com.example.contactbooktotalx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOGjHAnsqenNLAqEpPtDZ6oCqnvq1000M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
