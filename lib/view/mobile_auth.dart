@@ -104,11 +104,11 @@ class _MobileAuthState extends State<MobileAuth> {
                       responsive: responsive,
                       buttonText: 'Get OTP',
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => const OtpPage()),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const OTPScreen()),
+                        );
                       },
                     ),
                   ),

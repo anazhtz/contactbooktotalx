@@ -105,7 +105,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   String? _validateOTP(String? value) {
     if (value == null || value.isEmpty) {
-      return 'OTP is required';
+      return 'OTP';
     }
     if (value.length != 1) {
       return 'Enter a single digit';
