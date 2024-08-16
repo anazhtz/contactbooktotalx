@@ -1,3 +1,4 @@
+import 'package:contactbooktotalx/view/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:contactbooktotalx/widgets/custom_button.dart';
@@ -192,7 +193,12 @@ class _OTPScreenState extends State<OTPScreen> {
                   responsive: responsive,
                   buttonText: 'Verify',
                   onTap: () {
-                    if (_formKey.currentState?.validate() ?? false) {}
+                    if (_formKey.currentState?.validate() ?? false) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => UserListPage()),
+                  );
+                }
                   },
                 ),
               ),

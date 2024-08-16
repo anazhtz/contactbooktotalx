@@ -67,8 +67,8 @@ class PhoneNumberField extends StatelessWidget {
         ),
         if (!focusNode.hasFocus)
           Positioned(
-            right: 190,
-            top: 10,
+            right: responsive.wp(48), 
+            top: responsive.hp(1),    
             child: Padding(
               padding: EdgeInsets.all(responsive.wp(1)),
               child: Text(
