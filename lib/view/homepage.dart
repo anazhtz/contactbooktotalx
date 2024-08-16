@@ -6,46 +6,48 @@ import 'package:contactbooktotalx/widgets/custom_filter_screen.dart';
 import 'package:contactbooktotalx/widgets/icon_filter_button.dart';
 import 'package:flutter/material.dart';
 
-class UserListPage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final List<Map<String, String>> users = [
-    {
-      "name": "Martin Dokidis",
-      "age": "34",
-      "image": "assets/images/Rectangle 88 (1).png"
-    },
-    {
-      "name": "Marilyn Rosser",
-      "age": "34",
-      "image": "assets/images/Rectangle 88 (2).png"
-    },
-    {
-      "name": "Cristofer Lipshutz",
-      "age": "34",
-      "image": "assets/images/Rectangle 88 (3).png"
-    },
-    {
-      "name": "Wilson Botosh",
-      "age": "34",
-      "image": "assets/images/Rectangle 88 (4).png"
-    },
-    {
-      "name": "Anika Saris",
-      "age": "34",
-      "image": "assets/images/Rectangle 88 (5).png"
-    },
-    {
-      "name": "Phillip Gouse",
-      "age": "34",
-      "image": "assets/images/Rectangle 88.png"
-    },
-    {
-      "name": "Wilson Bergson",
-      "age": "34",
-      "image": "assets/images/Rectangle 88 (2).png"
-    },
+    {"name": "Martin Dokidis", "age": "34", "image": "assets/images/Rectangle 88 (1).png"},
+    {"name": "Marilyn Rosser", "age": "34", "image": "assets/images/Rectangle 88 (2).png"},
+    {"name": "Cristofer Lipshutz", "age": "34", "image": "assets/images/Rectangle 88 (3).png"},
+    {"name": "Wilson Botosh", "age": "34", "image": "assets/images/Rectangle 88 (4).png"},
+    {"name": "Anika Saris", "age": "34", "image": "assets/images/Rectangle 88 (5).png"},
+    {"name": "Phillip Gouse", "age": "34", "image": "assets/images/Rectangle 88.png"},
+    {"name": "Wilson Bergson", "age": "34", "image": "assets/images/Rectangle 88 (2).png"},
   ];
 
-  UserListPage({super.key});
+  List<Map<String, String>> filteredUsers = [];
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    filteredUsers = users;
+    searchController.addListener(_filterUsers);
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterUsers() {
+    String query = searchController.text.toLowerCase();
+    setState(() {
+      filteredUsers = users.where((user) {
+        return user['name']!.toLowerCase().contains(query) || user['age']!.contains(query);
+      }).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,11 @@ class UserListPage extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: CustomSearchFiled(responsive: responsive),
+                  child: CustomSearchFiled(
+                    responsive: responsive,
+                    controller: searchController, 
+                    hintText: 'Search by name',
+                  ),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: responsive.wp(1)),
@@ -97,7 +103,7 @@ class UserListPage extends StatelessWidget {
             const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
-                itemCount: users.length,
+                itemCount: filteredUsers.length,
                 itemBuilder: (context, index) {
                   return Card(
                     color: AppColors.secondaryColor,
@@ -112,7 +118,7 @@ class UserListPage extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 35,
-                            backgroundImage: AssetImage(users[index]['image']!),
+                            backgroundImage: AssetImage(filteredUsers[index]['image']!),
                           ),
                           SizedBox(width: responsive.wp(3)),
                           Expanded(
@@ -120,16 +126,14 @@ class UserListPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  users[index]['name']!,
-                                  style: AppTypography.montserratBoldMainHead
-                                      .copyWith(
+                                  filteredUsers[index]['name']!,
+                                  style: AppTypography.montserratBoldMainHead.copyWith(
                                     fontSize: responsive.hp(2.2),
                                   ),
                                 ),
                                 Text(
-                                  'Age: ${users[index]['age']}',
-                                  style:
-                                      AppTypography.montserratRegular.copyWith(
+                                  'Age: ${filteredUsers[index]['age']}',
+                                  style: AppTypography.montserratRegular.copyWith(
                                     fontSize: responsive.hp(1.8),
                                   ),
                                 ),
@@ -249,7 +253,7 @@ void _showAddUserDialog(BuildContext context) {
           borderRadius: BorderRadius.circular(16),
         ),
         content: SizedBox(
-          width: 320, 
+          width: 320,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,8 +284,7 @@ void _showAddUserDialog(BuildContext context) {
                         height: 32,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors
-                              .blue,
+                          color: Colors.blue,
                         ),
                         child: IconButton(
                           icon: const Icon(
@@ -289,9 +292,7 @@ void _showAddUserDialog(BuildContext context) {
                             color: Colors.white,
                             size: 18,
                           ),
-                          onPressed: () {
-            
-                          },
+                          onPressed: () {},
                         ),
                       ),
                     ),
@@ -325,24 +326,20 @@ void _showAddUserDialog(BuildContext context) {
                   children: [
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop(); 
+                        Navigator.of(context).pop();
                       },
                       child: const Text(
                         'Cancel',
                         style: TextStyle(
-                          color: Colors
-                              .grey, 
+                          color: Colors.grey,
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
-                      onPressed: () {
-                 
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors
-                            .blue, 
+                        backgroundColor: Colors.blue,
                       ),
                       child: const Text(
                         'Save',

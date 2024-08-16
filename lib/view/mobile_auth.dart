@@ -1,4 +1,6 @@
-import 'package:contactbooktotalx/view/otp_page.dart';
+import 'dart:developer';
+
+import 'package:contactbooktotalx/viewmodel/auth_viewmodel.dart';
 import 'package:contactbooktotalx/widgets/custom_button.dart';
 import 'package:contactbooktotalx/widgets/custom_terms_text.dart';
 import 'package:contactbooktotalx/widgets/custom_textfield.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:contactbooktotalx/constand/app_color.dart';
 import 'package:contactbooktotalx/constand/app_fonts.dart';
 import 'package:contactbooktotalx/utilis/responsive.dart';
+import 'package:provider/provider.dart';
 
 class MobileAuth extends StatefulWidget {
   const MobileAuth({super.key});
@@ -17,6 +20,7 @@ class MobileAuth extends StatefulWidget {
 class _MobileAuthState extends State<MobileAuth> {
   final FocusNode _focusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _phoneController = TextEditingController(); 
 
   @override
   void initState() {
@@ -44,6 +48,7 @@ class _MobileAuthState extends State<MobileAuth> {
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context: context);
+    final authViewModel = Provider.of<MobileAuthViewModel>(context); 
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -77,6 +82,7 @@ class _MobileAuthState extends State<MobileAuth> {
                   SizedBox(height: responsive.hp(1.5)),
                   PhoneNumberField(
                     focusNode: _focusNode,
+                    controller: _phoneController, 
                     validator: validatePhoneNumber,
                     responsive: responsive,
                   ),
@@ -104,11 +110,13 @@ class _MobileAuthState extends State<MobileAuth> {
                       responsive: responsive,
                       buttonText: 'Get OTP',
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OTPScreen()),
-                        );
+                        if (_formKey.currentState?.validate() ?? false) {
+                          log(_phoneController.text);
+                          authViewModel.verifyPhoneNumber(
+                            _phoneController.text,
+                            context,
+                          );
+                        }
                       },
                     ),
                   ),

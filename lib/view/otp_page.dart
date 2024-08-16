@@ -1,12 +1,13 @@
 import 'package:contactbooktotalx/view/homepage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:contactbooktotalx/viewmodel/auth_viewmodel.dart';
 import 'package:contactbooktotalx/widgets/custom_button.dart';
 import 'package:contactbooktotalx/widgets/custom_terms_text.dart';
 import 'package:contactbooktotalx/constand/app_color.dart';
 import 'package:contactbooktotalx/constand/app_fonts.dart';
 import 'package:contactbooktotalx/utilis/responsive.dart';
-
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({super.key});
@@ -25,6 +26,13 @@ class _OTPScreenState extends State<OTPScreen> {
   late TextEditingController _otpController5;
   late TextEditingController _otpController6;
 
+  late FocusNode _focusNode1;
+  late FocusNode _focusNode2;
+  late FocusNode _focusNode3;
+  late FocusNode _focusNode4;
+  late FocusNode _focusNode5;
+  late FocusNode _focusNode6;
+
   @override
   void initState() {
     super.initState();
@@ -34,50 +42,57 @@ class _OTPScreenState extends State<OTPScreen> {
     _otpController4 = TextEditingController();
     _otpController5 = TextEditingController();
     _otpController6 = TextEditingController();
+
+    _focusNode1 = FocusNode();
+    _focusNode2 = FocusNode();
+    _focusNode3 = FocusNode();
+    _focusNode4 = FocusNode();
+    _focusNode5 = FocusNode();
+    _focusNode6 = FocusNode();
+
     startTimer();
   }
 
- void startTimer() {
-  Future.delayed(const Duration(seconds: 1), () {
-    if (_timer > 0) {
-      setState(() {
-        _timer--;
-      });
-      startTimer();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                color: Colors.white,
-              ),
-              SizedBox(width: 8),
-              Text(
-                'Timeout',
-                style: TextStyle(
+  void startTimer() {
+    Future.delayed(const Duration(seconds: 1), () {
+      if (_timer > 0) {
+        setState(() {
+          _timer--;
+        });
+        startTimer();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
                 ),
-              ),
-            ],
+                SizedBox(width: 8),
+                Text(
+                  'Timeout',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            duration: const Duration(seconds: 3),
           ),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          margin: const EdgeInsets.all(16),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          duration: const Duration(seconds: 3),
-        ),
-      );
-    }
-  });
-}
-
+        );
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -87,6 +102,14 @@ class _OTPScreenState extends State<OTPScreen> {
     _otpController4.dispose();
     _otpController5.dispose();
     _otpController6.dispose();
+
+    _focusNode1.dispose();
+    _focusNode2.dispose();
+    _focusNode3.dispose();
+    _focusNode4.dispose();
+    _focusNode5.dispose();
+    _focusNode6.dispose();
+
     super.dispose();
   }
 
@@ -103,6 +126,7 @@ class _OTPScreenState extends State<OTPScreen> {
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context: context);
+    final authViewModel = Provider.of<MobileAuthViewModel>(context);
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -141,12 +165,12 @@ class _OTPScreenState extends State<OTPScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    _buildOTPTextField(_otpController1, responsive),
-                    _buildOTPTextField(_otpController2, responsive),
-                    _buildOTPTextField(_otpController3, responsive),
-                    _buildOTPTextField(_otpController4, responsive),
-                    _buildOTPTextField(_otpController5, responsive),
-                    _buildOTPTextField(_otpController6, responsive),
+                    _buildOTPTextField(_otpController1, _focusNode1, _focusNode2, responsive),
+                    _buildOTPTextField(_otpController2, _focusNode2, _focusNode3, responsive),
+                    _buildOTPTextField(_otpController3, _focusNode3, _focusNode4, responsive),
+                    _buildOTPTextField(_otpController4, _focusNode4, _focusNode5, responsive),
+                    _buildOTPTextField(_otpController5, _focusNode5, _focusNode6, responsive),
+                    _buildOTPTextField(_otpController6, _focusNode6, null, responsive),
                   ],
                 ),
               ),
@@ -180,11 +204,15 @@ class _OTPScreenState extends State<OTPScreen> {
                   buttonText: 'Verify',
                   onTap: () {
                     if (_formKey.currentState?.validate() ?? false) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => UserListPage()),
-                  );
-                }
+                      final otp = _otpController1.text +
+                          _otpController2.text +
+                          _otpController3.text +
+                          _otpController4.text +
+                          _otpController5.text +
+                          _otpController6.text;
+
+                      authViewModel.verifyOtp(context, otp);
+                    }
                   },
                 ),
               ),
@@ -196,11 +224,16 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   Widget _buildOTPTextField(
-      TextEditingController controller, Responsive responsive) {
+    TextEditingController controller,
+    FocusNode currentFocus,
+    FocusNode? nextFocus,
+    Responsive responsive,
+  ) {
     return SizedBox(
       width: responsive.wp(12),
       child: TextFormField(
         controller: controller,
+        focusNode: currentFocus,
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         maxLength: 1,
@@ -232,6 +265,11 @@ class _OTPScreenState extends State<OTPScreen> {
           counterText: '',
         ),
         validator: _validateOTP,
+        onChanged: (value) {
+          if (value.length == 1) {
+            nextFocus?.requestFocus();
+          }
+        },
       ),
     );
   }

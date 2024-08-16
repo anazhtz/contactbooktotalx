@@ -7,19 +7,20 @@ class PhoneNumberField extends StatelessWidget {
   final FocusNode focusNode;
   final String? Function(String?) validator;
   final Responsive responsive;
+  final TextEditingController controller;
 
   const PhoneNumberField({
     super.key,
     required this.focusNode,
     required this.validator,
-    required this.responsive,
+    required this.responsive, required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        TextFormField(
+        TextFormField(controller: controller,
           focusNode: focusNode,
           keyboardType: TextInputType.number,
           style: AppTypography.montserratRegular.copyWith(
