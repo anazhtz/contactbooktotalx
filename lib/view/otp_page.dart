@@ -7,20 +7,6 @@ import 'package:contactbooktotalx/constand/app_color.dart';
 import 'package:contactbooktotalx/constand/app_fonts.dart';
 import 'package:contactbooktotalx/utilis/responsive.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: OTPScreen(),
-    );
-  }
-}
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({super.key});

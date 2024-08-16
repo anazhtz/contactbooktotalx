@@ -3,24 +3,8 @@ import 'package:contactbooktotalx/constand/app_fonts.dart';
 import 'package:contactbooktotalx/utilis/responsive.dart';
 import 'package:contactbooktotalx/widgets/Custom_search_field.dart';
 import 'package:contactbooktotalx/widgets/custom_filter_screen.dart';
-import 'package:contactbooktotalx/widgets/custom_textfield.dart';
 import 'package:contactbooktotalx/widgets/icon_filter_button.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: UserListPage(),
-    );
-  }
-}
 
 class UserListPage extends StatelessWidget {
   final List<Map<String, String>> users = [
