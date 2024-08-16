@@ -10,21 +10,25 @@ class SubmitButton extends StatelessWidget {
     required this.responsive,
     required this.buttonText,
     required this.onTap,
+    this.isLoading = false,
   }) : _formKey = formKey;
 
   final GlobalKey<FormState> _formKey;
   final Responsive responsive;
   final String buttonText;
   final VoidCallback onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        if (_formKey.currentState?.validate() ?? false) {
-          onTap(); 
-        }
-      },
+      onPressed: isLoading
+          ? null
+          : () {
+              if (_formKey.currentState?.validate() ?? false) {
+                onTap();
+              }
+            },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.black,
         padding: EdgeInsets.symmetric(vertical: responsive.hp(2)),
@@ -32,13 +36,22 @@ class SubmitButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(responsive.wp(8)),
         ),
       ),
-      child: Text(
-        buttonText,
-        style: AppTypography.montserratSemiBold.copyWith(
-          color: AppColors.secondaryColor,
-          fontSize: responsive.sp(16),
-        ),
-      ),
+      child: isLoading
+          ? SizedBox(
+              height: responsive.hp(2),
+              width: responsive.hp(2),
+              child: CircularProgressIndicator(
+                color: AppColors.secondaryColor,
+                strokeWidth: 2.0,
+              ),
+            )
+          : Text(
+              buttonText,
+              style: AppTypography.montserratSemiBold.copyWith(
+                color: AppColors.secondaryColor,
+                fontSize: responsive.sp(16),
+              ),
+            ),
     );
   }
 }

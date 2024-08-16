@@ -1,4 +1,3 @@
-import 'package:contactbooktotalx/view/homepage.dart';
 import 'package:contactbooktotalx/viewmodel/auth_viewmodel.dart';
 import 'package:contactbooktotalx/widgets/custom_button.dart';
 import 'package:contactbooktotalx/widgets/custom_terms_text.dart';
@@ -32,6 +31,8 @@ class _OTPScreenState extends State<OTPScreen> {
   late FocusNode _focusNode4;
   late FocusNode _focusNode5;
   late FocusNode _focusNode6;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -123,10 +124,31 @@ class _OTPScreenState extends State<OTPScreen> {
     return null;
   }
 
+  void _onVerifyOTP() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final otp = _otpController1.text +
+          _otpController2.text +
+          _otpController3.text +
+          _otpController4.text +
+          _otpController5.text +
+          _otpController6.text;
+
+      final authViewModel = Provider.of<MobileAuthViewModel>(context, listen: false);
+      await authViewModel.verifyOtp(context, otp);
+
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context: context);
-    final authViewModel = Provider.of<MobileAuthViewModel>(context);
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -202,18 +224,8 @@ class _OTPScreenState extends State<OTPScreen> {
                   formKey: _formKey,
                   responsive: responsive,
                   buttonText: 'Verify',
-                  onTap: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      final otp = _otpController1.text +
-                          _otpController2.text +
-                          _otpController3.text +
-                          _otpController4.text +
-                          _otpController5.text +
-                          _otpController6.text;
-
-                      authViewModel.verifyOtp(context, otp);
-                    }
-                  },
+                  isLoading: _isLoading, 
+                  onTap: _onVerifyOTP,  
                 ),
               ),
             ],

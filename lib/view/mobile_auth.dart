@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:contactbooktotalx/viewmodel/auth_viewmodel.dart';
 import 'package:contactbooktotalx/widgets/custom_button.dart';
 import 'package:contactbooktotalx/widgets/custom_terms_text.dart';
@@ -21,6 +19,7 @@ class _MobileAuthState extends State<MobileAuth> {
   final FocusNode _focusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _phoneController = TextEditingController(); 
+  bool _isLoading = false; 
 
   @override
   void initState() {
@@ -45,10 +44,25 @@ class _MobileAuthState extends State<MobileAuth> {
     return null;
   }
 
+  void _onSubmit() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final authViewModel = Provider.of<MobileAuthViewModel>(context, listen: false);
+    await authViewModel.verifyPhoneNumber(
+      _phoneController.text,
+      context,
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context: context);
-    final authViewModel = Provider.of<MobileAuthViewModel>(context); 
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -109,15 +123,8 @@ class _MobileAuthState extends State<MobileAuth> {
                       formKey: _formKey,
                       responsive: responsive,
                       buttonText: 'Get OTP',
-                      onTap: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          log(_phoneController.text);
-                          authViewModel.verifyPhoneNumber(
-                            _phoneController.text,
-                            context,
-                          );
-                        }
-                      },
+                      isLoading: _isLoading,
+                      onTap: _onSubmit,
                     ),
                   ),
                 ],

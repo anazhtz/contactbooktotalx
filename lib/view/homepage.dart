@@ -26,11 +26,12 @@ class _HomePageState extends State<HomePage> {
 
   List<Map<String, String>> filteredUsers = [];
   TextEditingController searchController = TextEditingController();
+  bool isLoading = true; 
 
   @override
   void initState() {
     super.initState();
-    filteredUsers = users;
+    _loadInitialData(); 
     searchController.addListener(_filterUsers);
   }
 
@@ -38,6 +39,15 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     searchController.dispose();
     super.dispose();
+  }
+
+  void _loadInitialData() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      filteredUsers = users;
+      isLoading = false; 
+    });
   }
 
   void _filterUsers() {
@@ -63,93 +73,97 @@ class _HomePageState extends State<HomePage> {
           style: AppTypography.montserratSemiBold.copyWith(color: Colors.white),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(responsive.wp(2)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: CustomSearchFiled(
-                    responsive: responsive,
-                    controller: searchController, 
-                    hintText: 'Search by name',
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(), 
+            )
+          : Padding(
+              padding: EdgeInsets.all(responsive.wp(2)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomSearchFiled(
+                          responsive: responsive,
+                          controller: searchController, 
+                          hintText: 'Search by name',
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: responsive.wp(1)),
+                        padding: EdgeInsets.all(responsive.hp(0.1)),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconFilterButton(
+                          responsive: responsive,
+                          onPressed: () {
+                            _showSortOptions(context);
+                          },
+                        ),
+                      )
+                    ],
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: responsive.wp(1)),
-                  padding: EdgeInsets.all(responsive.hp(0.1)),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: IconFilterButton(
-                    responsive: responsive,
-                    onPressed: () {
-                      _showSortOptions(context);
-                    },
-                  ),
-                )
-              ],
-            ),
-            Text(
-              'Users Lists',
-              style: AppTypography.montserratBoldMainHead.copyWith(
-                color: AppColors.textColor.withOpacity(0.6),
-                fontSize: responsive.hp(2),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: filteredUsers.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    color: AppColors.secondaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
+                  Text(
+                    'Users Lists',
+                    style: AppTypography.montserratBoldMainHead.copyWith(
+                      color: AppColors.textColor.withOpacity(0.6),
+                      fontSize: responsive.hp(2),
                     ),
-                    margin: EdgeInsets.symmetric(vertical: responsive.hp(1)),
-                    elevation: 1,
-                    child: Padding(
-                      padding: EdgeInsets.all(responsive.wp(2)),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 35,
-                            backgroundImage: AssetImage(filteredUsers[index]['image']!),
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: filteredUsers.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          color: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
-                          SizedBox(width: responsive.wp(3)),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          margin: EdgeInsets.symmetric(vertical: responsive.hp(1)),
+                          elevation: 1,
+                          child: Padding(
+                            padding: EdgeInsets.all(responsive.wp(2)),
+                            child: Row(
                               children: [
-                                Text(
-                                  filteredUsers[index]['name']!,
-                                  style: AppTypography.montserratBoldMainHead.copyWith(
-                                    fontSize: responsive.hp(2.2),
-                                  ),
+                                CircleAvatar(
+                                  radius: 35,
+                                  backgroundImage: AssetImage(filteredUsers[index]['image']!),
                                 ),
-                                Text(
-                                  'Age: ${filteredUsers[index]['age']}',
-                                  style: AppTypography.montserratRegular.copyWith(
-                                    fontSize: responsive.hp(1.8),
+                                SizedBox(width: responsive.wp(3)),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        filteredUsers[index]['name']!,
+                                        style: AppTypography.montserratBoldMainHead.copyWith(
+                                          fontSize: responsive.hp(2.2),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Age: ${filteredUsers[index]['age']}',
+                                        style: AppTypography.montserratRegular.copyWith(
+                                          fontSize: responsive.hp(1.8),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showAddUserDialog(context);
